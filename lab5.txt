@@ -1,0 +1,43 @@
+    1  clear
+    2  mkdir ~/lab5
+    3  cd ~/lab5
+    4  nano hello1.c
+    5  nano hello2.c
+    6  nano Makefile
+    7  mkdir ./inc
+    8  cd ./inc
+    9  nano hello1.c
+   10  cd ~/lab5
+   11  ls
+   12  $KDIR/scripts/checkpatch.pl -f hello1.c
+   13  export $KDIR=$HOME/repos/linux-stable
+   14  $KDIR/scripts/checkpatch.pl -f hello1.c
+   15  cd ..
+   16  export $KDIR=$HOME/repos/linux-stable
+   17  cd ~/repos/linux-stable
+   18  git checkout linux-4.19.y
+   19  export PATH=/opt/gcc-arm-8.3-2019.03-x86_64-arm-eabi/bin:$PATH
+   20  export CROSS_COMPILE='ccache arm-eabi-'
+   21  export ARCH=arm
+   22  ./scripts/kconfig/merge_config.sh arch/arm/configs/multi_v7_defconfig fragments/bbb.cfg
+   23  make -j4 zImage modules am335x-boneblack.dtb
+   24  cd ~/lab5
+   25  export $KDIR=$HOME/repos/linux-stable
+   26  export KDIR=$HOME/repos/linux-stable
+   27  $KDIR/scripts/checkpatch.pl -f hello1.c
+   28  $KDIR/scripts/checkpatch.pl -f hello2.c
+   29  nano hello1.c
+   30  $KDIR/scripts/checkpatch.pl -f hello1.c
+   31  export KDIR=$HOME/repos/linux-stable
+   32  make
+   33  ls
+   34  mv hello1.ko ~/repos/busybox/_install
+   35  mv hello2.ko ~/repos/busybox/_install
+   36  ls
+   37  cd ~/repos/busybox/_install
+   38  ls
+   39  find . | cpio -o -H newc | gzip > ../rootfs.cpio.gz
+   40  cd ~/repos/busybox
+   41  qemu-system-arm -kernel _install/boot/zImage -initrd rootfs.cpio.gz -machine virt -nographic -m 512 --append "root=/dev/ram0 rw console=ttyAMA0,115200 mem=512M"
+   42  cd ~/lab5
+   43  history > lab5.txt
